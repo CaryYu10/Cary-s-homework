@@ -1,30 +1,11 @@
 import re
 
 
-def del_space(text):           # 去除缩进造成的大量空格
-    text_new = []
-    for line in text:
-        line = line.strip()
-        text_new.append(line)
-    return text_new
-
-
-def del_hash(text):             # 去除代码中以‘#’为开头的注释(注释中可能含有关键词，未被除去会导致误判语法错误)
-    text_new = []
-    for line in text:
-        j = 0
-        delet = 0
-        for it in line:
-            if it == '#' and line[j+1] == ' ':
-                line = line[:j]
-                text_new.append(line)
-                delet += 1
-                break
-            else:
-                j += 1
-        if delet == 0:
-            text_new.append(line)
-    return text_new
+def del_hash(line):             # 去除代码中所有注释和引用(注释中可能含有关键词，未被除去会导致误判语法错误)
+    line = re.sub(r'(#+)(\s+)(.*)', '', line)
+    line = re.sub(r'("){1,3}(.*)("){1,3}', '', line)
+    line = re.sub(r"('){1}(.*)('){1}", '', line)
+    return line
 
 
 def checkif(line, num):         # 通过正则表达式判断关键词“if”是否符合语法
@@ -89,6 +70,10 @@ def check(text):
     errors = 0
     for eachline in text:
         temp = str(eachline).lower()
+        eachline = del_hash(eachline)
+        eachline = eachline.strip()
+        temp = del_hash(temp)
+        temp = temp.strip()
         for i in r"~!@#$%^&*()_+-[]{},.\?=:;'/":
             line = temp.replace(i, " ")
         line = line.split()
@@ -133,23 +118,21 @@ def getResult(errors):        # 返回文件语法错误数
         print("共发现", errors, "个语法错误")
 
 
-def loadText(fileName):         # 逐行打开文件
-    try:
-        print("正在检测 %s 文件语法错误" % fileName)
-        f = open(r'%s' % fileName, encoding='utf-8')
-    except:
-        fileName = 'grammar_detection.py'
-        print("正在检测 %s 文件语法错误" % fileName)
-        f = open(r'%s' % fileName, encoding='utf-8')
-    data = f.readlines()
+def loadText():         # 选取需要检测的文件
+    while True:
+        filename = input("请输入待检测文件名")  # 选定需检测的文件
+        try:
+            f = open(r'%s' % filename, encoding='utf-8')
+            print("正在检测 %s 文件语法错误" % filename)
+            data = f.readlines()
+            break
+        except:
+            print("未找到 %s 文件，请重新输入" % filename)
     return data
 
 
 def run():
-    filename = input("请输入待检测文件名，若输入错误则默认为检测'grammar_detection.py'文件：")  # 选定需检测的文件
-    text = loadText(filename)
-    text = del_hash(text)
-    text = del_space(text)
+    text = loadText()
     error = check(text)
     getResult(error)
 

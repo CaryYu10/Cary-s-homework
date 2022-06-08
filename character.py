@@ -19,16 +19,6 @@ def print_process():
     sys.stdout.flush()
 
 
-def drawSnake(rad, angle, len, neckrad):
-    for i in range(len):
-        turtle.circle(rad, angle)
-        turtle.circle(-rad, angle)
-    turtle.circle(rad, angle/2)
-    turtle.fd(rad)
-    turtle.circle(neckrad+1, 180)
-    turtle.fd(rad*2/3)
-
-
 def drawLine(x, y, direction, len, angle=0, r=0):
     turtle.penup()
     turtle.goto(x, y)

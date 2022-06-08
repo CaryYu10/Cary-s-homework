@@ -64,6 +64,7 @@ def drawTime(time):
                 drawDigit(eval(i))
         except NameError:
             print('undefined type \n')
+            break
 
 
 def drawNumber(number):
@@ -75,15 +76,19 @@ def drawNumber(number):
 
 
 def digit_menu():
-    type = input('请选择输入类型：\n 1. 时间 \n 2. 日期 \n 3. 任意数字 \n')
-    if type == '1':
-        drawTime(input('请输入时间，如10时10分10秒 \n'))
-    if type == '2':
-        drawDate(input('请输入日期，如2022年2月22日 \n'))
-    if type == '3':
-        drawNumber(input('请输入任意一串数字 \n'))
-    else:
-        print('undefined type \n')
+    while True:
+        type = input('请选择输入类型：\n 1. 时间 \n 2. 日期 \n 3. 任意数字 \n')
+        if type == '1':
+            drawTime(input('请输入时间，如10时10分10秒 \n'))
+            break
+        if type == '2':
+            drawDate(input('请输入日期，如2022年2月22日 \n'))
+            break
+        if type == '3':
+            drawNumber(input('请输入任意一串数字 \n'))
+            break
+        else:
+            print("输入错误，请重新输入")
 
 
 def setup():
